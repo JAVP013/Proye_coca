@@ -10,7 +10,6 @@ import AddInventoryModal from "../modals/AddInventoriesModal";
 import UpdateInventoryModal from "../modals/UpdateInventoriesModal";
 import DeleteInventoryModal from "../modals/DeleteInventoriesModal"; // Importar el modal de eliminación
 import DetailsInventoryModal from "../modals/DetailsInventoryModal";
-import { object } from "yup";
 
 const InventoriesColumns = [
   { accessorKey: "_id", header: "ID", size: 150 },
@@ -20,7 +19,7 @@ const InventoriesColumns = [
   { accessorKey: "Email", header: "Email", size: 150 },
 ];
 
-const InventoriesTable = ({ dataInventories, onSelectionExport }) => {
+const InventoriesTable = () => {
   const [loadingTable, setLoadingTable] = useState(true);
   const [inventoriesData, setInventoriesData] = useState([]);
   const [addInventoryShowModal, setAddInventoryShowModal] = useState(false);
@@ -107,17 +106,29 @@ const InventoriesTable = ({ dataInventories, onSelectionExport }) => {
             </Tooltip>
 
             <Tooltip title="Eliminar">
-              <IconButton onClick={() => setDeleteInventoryShowModal(true)}>
+              <IconButton onClick={() => {
+            const selectedData = Object.keys(rowSelection).map((key) => inventoriesData[key]);
+
+           
+
+            // Pasa solo el ID del inventario seleccionado al modal de actualización
+            setDeleteInventoryShowModal(true);
+            setSelectedInventory(selectedData);  // Guardamos el inventario seleccionado
+        }}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
 
             <Tooltip title="Detalles">
-              <IconButton
-                onClick={() => {
-                  setDetailsInventoryShowModal(true);
-                }}
-              >
+            <IconButton onClick={() => {
+            const selectedData = Object.keys(rowSelection).map((key) => inventoriesData[key]);
+
+           
+
+            // Pasa solo el ID del inventario seleccionado al modal de actualización
+            setDetailsInventoryShowModal(true);
+            setSelectedInventory(selectedData);  // Guardamos el inventario seleccionado
+        }}>
                 <InfoIcon />
               </IconButton>
             </Tooltip>
@@ -154,12 +165,14 @@ const InventoriesTable = ({ dataInventories, onSelectionExport }) => {
         setShowUpdateModal={setUpdateInventoryShowModal}
         selectedInventory={selectedInventory} // Pasa el inventario seleccionado
         fetchData={fetchData}
+        onClose={() => setUpdateInventoryShowModal(false)}
       />
 
       <DeleteInventoryModal
         showDeleteModal={deleteInventoryShowModal}
         setShowDeleteModal={setDeleteInventoryShowModal}
         fetchData={fetchData}
+        selectInventory={selectedInventory}
         onClose={() => setDeleteInventoryShowModal(false)}
       />
 
@@ -167,6 +180,8 @@ const InventoriesTable = ({ dataInventories, onSelectionExport }) => {
         showDetailsModal={detailsInventoryShowModal}
         setShowDetailsModal={setDetailsInventoryShowModal}
         inventories={inventoriesData}
+        selectedInventory={selectedInventory} // Pasa el inventario seleccionado
+        onClose={() => setDetailsInventoryShowModal(false)}
       />
     </Box>
 
@@ -174,3 +189,6 @@ const InventoriesTable = ({ dataInventories, onSelectionExport }) => {
 };
 
 export default InventoriesTable;
+
+
+
